@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import Product from '../models/product';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-  const { items, expectedTotal } = req.body; // элементы -- это массив с _id'ми товаров
+  const { items, total } = req.body; // элементы -- это массив с _id'ми товаров
 
   try {
     // Проверим, что массив с элементами не пуст
@@ -46,8 +46,8 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     // Рассчитываем общую стоимость на основе цен на товары и проверяем
     // cоответствует ли рассчитанная сумма ожидаемой сумме из запроса
-    const total = products.reduce((acc, product) => acc + product.price, 0);
-    if (total !== expectedTotal) {
+    const actualTotal = products.reduce((acc, product) => acc + product.price, 0);
+    if (actualTotal !== total) {
       return next('Неправильная сумма заказа');
     }
 
