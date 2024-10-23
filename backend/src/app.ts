@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
 import routes from './routes';
 
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(cors());
 
 app.use(express.json()); // Для разбора JSON
 app.use(express.urlencoded({ extended: true })); // Для URL-кодированных запросов
+app.use(express.static(path.join(__dirname, 'public'))); // Обслуживаем статические файлы
 
 startServer();
 
