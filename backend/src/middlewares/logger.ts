@@ -16,7 +16,16 @@ export const requestLogger = expressWinston.logger({
     )
   ),
   meta: true,
-  msg: 'HTTP {{res.responseTime}}ms {{req.method}} {{req.url}}',
+  msg: 'HTTP {{res.statusCode}} {{req.method}} {{req.url}}',
+  level(_req, res) {
+    if (res.statusCode >= 100 && res.statusCode < 400) {
+      return 'info';
+    }
+    if (res.statusCode >= 400 && res.statusCode < 600) {
+      return 'error';
+    }
+    return 'info';
+  },
 });
 
 export const errorLogger = expressWinston.errorLogger({
