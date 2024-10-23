@@ -5,12 +5,16 @@ import {
   deleteProduct,
   updateProduct,
 } from '../controllers/products';
-import { validateProduct } from '../middlewares/validators';
+import {
+  validateProduct,
+  validateObjectId,
+  validateUpdateProductBody,
+} from '../middlewares/validators';
 
 const router = Router();
 router.get('/', getProducts);
 router.post('/', validateProduct, createProduct);
-router.delete('/:productId', deleteProduct);
-router.patch('/:productId', updateProduct);
+router.delete('/:productId', validateObjectId, deleteProduct);
+router.patch('/:productId', validateObjectId, validateUpdateProductBody, updateProduct);
 
 export default router;
