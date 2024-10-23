@@ -83,3 +83,34 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     return next(new ServerError('Произошла ошибка при удалении товара'));
   }
 };
+
+export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+  const { productId } = req.params;
+
+  if (!productId) {
+    return next(new BadRequestError('Требуется корректный идентификатор товара'));
+  }
+
+  try {
+    if (req.body?.image) {
+      await moveFile(req.body.image);
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(productId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct) {
+      return next(new BadRequestError('По заданному id товар отсутствует'));
+    }
+
+    return res.send(updatedProduct);
+  } catch (err) {
+    if (err instanceof Error && err.message.includes('E11000')) {
+      return next(new ConflictError('Товар с таким заголовком уже существует'));
+    }
+
+    return next(new ServerError('Произошла ошибка при обновлении товара'));
+  }
+};
