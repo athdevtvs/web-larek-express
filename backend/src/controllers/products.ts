@@ -1,5 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 import Product from '../models/product';
+import { MongoError } from '../types/error';
+import {
+  BadRequestError,
+  ConflictError,
+  ServerError,
+  NotFoundError,
+  ValidationError,
+  DuplicateKeyError,
+} from '../errors';
 
 export const getProducts = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -7,9 +17,11 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
     return res.send({ items: products, total: products.length });
   } catch (error) {
     if (error instanceof Error) {
-      return next(`Ошибка при получении продуктов: ${error.message}`);
+      return next(
+        new BadRequestError(`Ошибка при получении продуктов: ${error.message}`)
+      );
     }
-    return next('Произошла непредвиденная ошибка');
+    return next(new ServerError('Произошла непредвиденная ошибка'));
   }
 };
 
@@ -19,7 +31,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const isExist = await Product.findOne({ title });
     if (isExist) {
-      return next(`Продукт с названием "${title}" уже существует`);
+      return next(new ConflictError(`Продукт с названием "${title}" уже существует`));
     }
 
     const product = await Product.create({
@@ -31,14 +43,21 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     });
 
     if (!product) {
-      return next(console.error('Товар не найден после создания'));
+      return next(new NotFoundError('Товар не найден после создания'));
     }
 
     return res.status(201).send({ data: product });
   } catch (error) {
-    if (error instanceof Error) {
-      return next(error);
+    const mongoError = error as MongoError;
+
+    if (mongoError.code === 11000) {
+      return DuplicateKeyError(mongoError, next);
     }
-    return next(console.error('Произошла непредвиденная ошибка'));
+
+    if (error instanceof mongoose.Error.ValidationError) {
+      return ValidationError(error, next);
+    }
+
+    return next(new ServerError(`Произошла непредвиденная ошибка: ${error}`));
   }
 };

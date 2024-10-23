@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { NextFunction, Request, Response } from 'express';
 import Product from '../models/product';
+import { BadRequestError, ServerError } from '../errors';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { items, total } = req.body; // элементы -- это массив с _id'ми товаров
@@ -8,7 +9,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Проверим, что массив с элементами не пуст
     if (!Array.isArray(items) || items.length === 0) {
-      return next('Массив элементов не может быть пустым');
+      return next(new BadRequestError('Массив элементов не может быть пустым'));
     }
 
     const invalidProductIds: string[] = [];
@@ -24,7 +25,9 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     if (invalidProductIds.length > 0) {
-      return next(`Неверные id продуктов: ${invalidProductIds.join(', ')}`);
+      return next(
+        new BadRequestError(`Неверные id продуктов: ${invalidProductIds.join(', ')}`)
+      );
     }
 
     const products = await Product.find({
@@ -40,7 +43,11 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     );
     if (missingOrUnavailableProducts.length > 0) {
       return next(
-        `Товары с id не найдены или не продаются: ${missingOrUnavailableProducts.join(', ')}`
+        new BadRequestError(
+          `Товары с id не найдены или не продаются: ${missingOrUnavailableProducts.join(
+            ', '
+          )}`
+        )
       );
     }
 
@@ -48,7 +55,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     // cоответствует ли рассчитанная сумма ожидаемой сумме из запроса
     const actualTotal = products.reduce((acc, product) => acc + product.price, 0);
     if (actualTotal !== total) {
-      return next('Неправильная сумма заказа');
+      return next(new BadRequestError('Неправильная сумма заказа'));
     }
 
     // Создаем заказ (имитация реализации)
@@ -59,7 +66,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       total,
     });
   } catch (error) {
-    return next(`Ошибка сервера: ${JSON.stringify(error)}`);
+    return next(new ServerError(`Ошибка сервера: ${JSON.stringify(error)}`));
   }
 };
 
