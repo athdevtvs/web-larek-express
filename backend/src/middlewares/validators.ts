@@ -172,3 +172,45 @@ export const validateTokens = celebrate({
     }),
   }).unknown(),
 });
+
+export const validateObjectId = celebrate({
+  [Segments.PARAMS]: Joi.object({
+    productId: Joi.string().alphanum().length(24).required().messages({
+      'string.base': 'Значение должно быть строкой',
+      'string.empty': 'Значение не может быть пустым',
+      'string.alphanum': 'Значение должно содержать только буквы и цифры',
+      'string.length': 'Значение должно состоять ровно из {#limit} символов',
+      'any.required': 'Поле productId обязательно для заполнения',
+    }),
+  }),
+});
+
+export const validateUpdateProductBody = celebrate({
+  [Segments.BODY]: Joi.object({
+    title: Joi.string().min(2).max(30).messages({
+      'string.base': 'Название должно быть строкой',
+      'string.empty': 'Заголовок не может быть пустым',
+      'string.min': 'Заголовок должен содержать не менее {#limit} символов',
+      'string.max': 'Название не может превышать {#limit} символов',
+    }),
+    image: Joi.object({
+      fileName: Joi.string().required().messages({
+        'string.base': 'Имя файла должно быть строкой',
+        'any.required': 'Поле fileName обязательно для заполнения',
+      }),
+      originalName: Joi.string().required().messages({
+        'string.base': 'Исходное имя должно быть строкой',
+        'any.required': 'Поле originalName обязательно для заполнения',
+      }),
+    }),
+    category: Joi.string().messages({
+      'string.base': 'Категория должна быть строкой',
+    }),
+    description: Joi.string().messages({
+      'string.base': 'Описание должно быть строкой',
+    }),
+    price: Joi.number().default(null).messages({
+      'number.base': 'Цена должна быть числом',
+    }),
+  }),
+});

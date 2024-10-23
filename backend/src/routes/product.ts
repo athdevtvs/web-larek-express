@@ -10,11 +10,19 @@ import {
   validateObjectId,
   validateUpdateProductBody,
 } from '../middlewares/validators';
+import authMiddleware from '../middlewares/auth';
 
 const router = Router();
+
 router.get('/', getProducts);
 router.post('/', validateProduct, createProduct);
-router.delete('/:productId', validateObjectId, deleteProduct);
-router.patch('/:productId', validateObjectId, validateUpdateProductBody, updateProduct);
+router.delete('/:productId', authMiddleware, validateObjectId, deleteProduct);
+router.patch(
+  '/:productId',
+  authMiddleware,
+  validateObjectId,
+  validateUpdateProductBody,
+  updateProduct
+);
 
 export default router;
