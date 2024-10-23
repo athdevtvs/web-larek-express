@@ -7,10 +7,9 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
     return res.send({ items: products, total: products.length });
   } catch (error) {
     if (error instanceof Error) {
-      next(`Ошибка при получении продуктов: ${error.message}`);
-    } else {
-      next('Произошла непредвиденная ошибка');
+      return next(`Ошибка при получении продуктов: ${error.message}`);
     }
+    return next('Произошла непредвиденная ошибка');
   }
 };
 
