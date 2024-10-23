@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { NextFunction, Request, Response } from 'express';
 import Product from '../models/product';
 import { BadRequestError, ServerError } from '../errors';
+import HttpStatus from '../constants/httpStatus';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { items, total } = req.body; // элементы -- это массив с _id'ми товаров
@@ -61,7 +62,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     // Создаем заказ (имитация реализации)
     const orderId = faker.number.hex({ min: 1000000000, max: 9999999999 });
 
-    return res.status(200).send({
+    return res.status(HttpStatus.OK).send({
       id: orderId,
       total,
     });

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Product from '../models/product';
 import { MongoError } from '../types/error';
+import HttpStatus from '../constants/httpStatus';
 import moveFile from '../utils/moveFile';
 import {
   BadRequestError,
@@ -48,7 +49,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError('Товар не найден после создания'));
     }
 
-    return res.status(201).send(product);
+    return res.status(HttpStatus.CREATED).send(product);
   } catch (error) {
     const mongoError = error as MongoError;
 
