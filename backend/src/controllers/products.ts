@@ -19,7 +19,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const isExist = await Product.findOne({ title });
     if (isExist) {
-      return next(console.error(`Продукт с названием "${title}" уже существует`));
+      return next(`Продукт с названием "${title}" уже существует`);
     }
 
     const product = await Product.create({

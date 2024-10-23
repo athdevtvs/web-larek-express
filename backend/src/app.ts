@@ -1,6 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import routes from './routes';
 
 dotenv.config();
 const { PORT = 3000, DB_ADDRESS = 'mongodb://localhost:27017/weblarek' } = process.env;
@@ -28,6 +30,11 @@ const startServer = async () => {
   });
 };
 
-app.use(express.json());
+app.use(cors());
+
+app.use(express.json()); // Для разбора JSON
+app.use(express.urlencoded({ extended: true })); // Для URL-кодированных запросов
 
 startServer();
+
+app.use('/', routes); // Определяем маршруты
