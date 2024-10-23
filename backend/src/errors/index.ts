@@ -5,6 +5,7 @@ import NotFoundError from './not-found-error';
 import DuplicateKeyError from './duplicateKey-error';
 import ValidationError from './validation-error';
 import UnauthorizedError from './unauthorization-error';
+import FileError from './file-error';
 
 export {
   BadRequestError,
@@ -14,4 +15,5 @@ export {
   DuplicateKeyError,
   ValidationError,
   UnauthorizedError,
+  FileError,
 };
