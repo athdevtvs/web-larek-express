@@ -9,7 +9,7 @@ export const {
   ORIGIN_ALLOW = 'http://localhost:5173',
   NODE_ENV = 'develop',
   AUTH_REFRESH_TOKEN_EXPIRY = '7d',
-  AUTH_ACCESS_TOKEN_EXPIRY = '15m',
+  AUTH_ACCESS_TOKEN_EXPIRY = '1Om',
   JWT_SECRET = 'jwt_secret',
   AUTH_JWT_SECRET_KEY = process.env.NODE_ENV === 'production'
     ? process.env.JWT_SECRET!
