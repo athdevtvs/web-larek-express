@@ -6,13 +6,19 @@ import {
   logout,
   refreshAccessToken,
 } from '../controllers/auth';
+import {
+  validateLoginBody,
+  validateRegisterBody,
+  validateCurrentUserHeaders,
+  validateTokens,
+} from '../middlewares/validators';
 
 const router = Router();
 
-router.post('/login', login);
-router.post('/register', register);
-router.get('/token', refreshAccessToken);
-router.get('/logout', logout);
-router.get('/user', getCurrentUser);
+router.post('/login', validateLoginBody, login);
+router.post('/register', validateRegisterBody, register);
+router.get('/token', validateTokens, refreshAccessToken);
+router.get('/logout', validateTokens, logout);
+router.get('/user', validateCurrentUserHeaders, getCurrentUser);
 
 export default router;

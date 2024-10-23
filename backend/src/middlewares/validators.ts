@@ -1,5 +1,6 @@
 import { celebrate, Segments, Joi } from 'celebrate';
 import { IProduct } from '../models/product';
+import { IUser } from '../models/user';
 
 interface IOrder {
   items: string[];
@@ -108,4 +109,66 @@ export const validateOrder = celebrate({
           'Массив items должен содержать обязательные элементы',
       }),
   }),
+});
+
+export const validateLoginBody = celebrate({
+  [Segments.BODY]: Joi.object<IUser>({
+    email: Joi.string().email().required().messages({
+      'string.base': 'Email должно быть строкой',
+      'string.email': 'Введите правильный формат email',
+      'any.required': 'Поле email обязательно для заполнения',
+      'string.empty': 'Поле email не может быть пустым',
+    }),
+    password: Joi.string().required().min(6).messages({
+      'string.base': 'Пароль должен быть строкой',
+      'string.email': 'Введите правильный формат email',
+      'string.min': 'Пароль должен содержать минимум {#limit} символов',
+      'any.required': 'Поле password обязательно для заполнения',
+      'string.empty': 'Поле password не может быть пустым',
+    }),
+  }),
+});
+
+export const validateRegisterBody = celebrate({
+  [Segments.BODY]: Joi.object<IUser>({
+    name: Joi.string().required().min(2).max(30).messages({
+      'string.base': 'Имя должно быть строкой',
+      'string.min': 'Имя должен быть длиной не менее {#limit} символов.',
+      'string.max': 'Имя не может превышать {#limit} символов.',
+      'any.required': 'Поле name обязательно для заполнения',
+      'string.empty': 'Поле имя не может быть пустым',
+    }),
+    email: Joi.string().email().required().messages({
+      'string.base': 'Email должно быть строкой',
+      'string.email': 'Введите правильный формат email',
+      'any.required': 'Поле email обязательно для заполнения',
+      'string.empty': 'Поле email не может быть пустым',
+    }),
+    password: Joi.string().required().min(6).messages({
+      'string.base': 'Email должно быть строкой',
+      'string.email': 'Введите правильный формат email',
+      'any.required': 'Поле email обязательно для заполнения',
+      'string.empty': 'Поле email не может быть пустым',
+    }),
+  }),
+});
+
+export const validateCurrentUserHeaders = celebrate({
+  [Segments.HEADERS]: Joi.object({
+    authorization: Joi.string().required().messages({
+      'any.required': 'Требуется авторизация',
+      'string.base': 'Авторизация должна быть строкой',
+      'string.empty': 'Авторизация не может быть пустой',
+    }),
+  }).unknown(),
+});
+
+export const validateTokens = celebrate({
+  [Segments.COOKIES]: Joi.object({
+    refreshToken: Joi.string().required().messages({
+      'any.required': 'Требуется refresh токен',
+      'string.base': 'Refresh токен должен быть строкой',
+      'string.empty': 'Refresh токен не может быть пустым',
+    }),
+  }).unknown(),
 });
