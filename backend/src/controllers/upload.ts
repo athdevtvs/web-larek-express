@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { FileError } from '../errors';
 
-export const uploadFile = (req: Request, res: Response, _next: NextFunction) => {
+const uploadFile = (req: Request, res: Response, _next: NextFunction) => {
   const { file } = req;
 
   if (!file) {
