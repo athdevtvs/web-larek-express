@@ -63,3 +63,23 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     return next(new ServerError(`Произошла непредвиденная ошибка: ${error}`));
   }
 };
+
+export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+  const { productId } = req.params;
+
+  try {
+    if (!productId) {
+      return next(new BadRequestError('Id товара не указан.'));
+    }
+
+    const product = await Product.findByIdAndDelete(productId);
+
+    if (!product) {
+      return next(new BadRequestError('Нет товара по заданному id'));
+    }
+
+    return res.send(product);
+  } catch (err) {
+    return next(new ServerError('Произошла ошибка при удалении товара'));
+  }
+};
