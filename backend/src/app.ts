@@ -3,7 +3,10 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
+import { errors } from 'celebrate';
 import routes from './routes';
+import errorHandler from './middlewares/error-handler';
+import { errorLogger, requestLogger } from './middlewares/logger';
 
 dotenv.config();
 const { PORT = 3000, DB_ADDRESS = 'mongodb://localhost:27017/weblarek' } = process.env;
@@ -39,4 +42,8 @@ app.use(express.static(path.join(__dirname, 'public'))); // Обслуживае
 
 startServer();
 
+app.use(requestLogger); // Добавляем регистратор запросов
 app.use('/', routes); // Определяем маршруты
+app.use(errorLogger); // Добавляем регистратор ошибок (он должен находится перед errorHandler)
+app.use(errors()); // Обрабатываем ошибки проверки Celebrate
+app.use(errorHandler); // Подключакм пользовательский обработчик ошибок
