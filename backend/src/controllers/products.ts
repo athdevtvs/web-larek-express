@@ -48,7 +48,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError('Товар не найден после создания'));
     }
 
-    return res.status(201).send({ data: product });
+    return res.status(201).send(product);
   } catch (error) {
     const mongoError = error as MongoError;
 
@@ -80,7 +80,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 
     return res.send(product);
   } catch (err) {
-    return next(new ServerError('Произошла ошибка при удалении товара'));
+    return next(new ServerError(`Произошла ошибка при удалении товара: ${err}`));
   }
 };
 
@@ -102,7 +102,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     });
 
     if (!updatedProduct) {
-      return next(new BadRequestError('По заданному id товар отсутствует'));
+      return next(new BadRequestError(`По заданному id ${productId} товар отсутствует`));
     }
 
     return res.send(updatedProduct);

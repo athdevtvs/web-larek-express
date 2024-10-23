@@ -1,16 +1,27 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import { errors } from 'celebrate';
 import routes from './routes';
 import errorHandler from './middlewares/error-handler';
 import { errorLogger, requestLogger } from './middlewares/logger';
+import { PORT, DB_ADDRESS, ORIGIN_ALLOW } from './config';
 
-dotenv.config();
-const { PORT = 3000, DB_ADDRESS = 'mongodb://localhost:27017/weblarek' } = process.env;
 const app = express();
+app.use(cookieParser());
+
+const corsOptions = {
+  // Указывает источник, которому разрешен доступ к ресурсу
+  origin: ORIGIN_ALLOW,
+
+  // Указывает, может ли ответ на запрос раскрывать учетные данные (например, файлы cookie)
+  credentials: true,
+
+  // Указывает, какие заголовки могут быть включены в запросы к серверу
+  allowedHeaders: ['Authorization', 'Content-Type'],
+};
 
 const connectToDatabase = async () => {
   try {
@@ -34,7 +45,7 @@ const startServer = async () => {
   });
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json()); // Для разбора JSON
 app.use(express.urlencoded({ extended: true })); // Для URL-кодированных запросов

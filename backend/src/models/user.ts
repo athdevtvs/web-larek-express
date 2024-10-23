@@ -68,9 +68,8 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-export const userModel = model<IUser, UserModel>('user', userSchema);
-
 userSchema.statics.findUserByCredentials = async (email: string, password: string) => {
+  // eslint-disable-next-line no-use-before-define
   const user = await userModel.findOne({ email }).select('+password');
   if (!user) {
     throw new BadRequestError(ErrorMessage.INCORRECT_CREDENTIALS);
@@ -109,3 +108,5 @@ userSchema.statics.updateTokens = async function updateTokens(
 
   return user;
 };
+
+export const userModel = model<IUser, UserModel>('user', userSchema);
