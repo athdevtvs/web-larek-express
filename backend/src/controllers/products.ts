@@ -49,7 +49,14 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       return next(new NotFoundError('Товар не найден после создания'));
     }
 
-    return res.status(HttpStatus.CREATED).send(product);
+    return res.status(HttpStatus.CREATED).send({
+      _id: product._id,
+      title: product.title,
+      image: product.image,
+      category: product.category,
+      description: product.description,
+      price: product.price,
+    });
   } catch (error) {
     const mongoError = error as MongoError;
 
