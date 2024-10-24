@@ -8,6 +8,7 @@ import routes from './routes';
 import errorHandler from './middlewares/error-handler';
 import { errorLogger, requestLogger } from './middlewares/logger';
 import { PORT, DB_ADDRESS, ORIGIN_ALLOW } from './config';
+import './utils/cronJobs';
 
 const app = express();
 app.use(cookieParser());
