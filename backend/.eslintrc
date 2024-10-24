@@ -1,15 +1,21 @@
 {
+  "root": true,
   "env": {
     "es2021": true,
     "node": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "settings": {
     "import/resolver": {
       "node": {
@@ -19,6 +25,7 @@
     "import/extensions": [".js", ".ts"]
   },
   "rules": {
+    "prettier/prettier": "error",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "warn",
     "import/extensions": [
@@ -27,6 +34,14 @@
       {
         "js": "never",
         "ts": "never"
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": false,
+        "optionalDependencies": false,
+        "peerDependencies": false
       }
     ],
     "no-underscore-dangle": [
@@ -44,6 +59,7 @@
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "no-console": "off"
   }
 }
