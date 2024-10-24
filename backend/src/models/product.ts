@@ -3,9 +3,14 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { FileError } from '../errors';
 
+export interface IFile {
+  fileName: string;
+  originalName: string;
+}
+
 export interface IProduct {
   title: string;
-  image: { fileName: string; originalName: string };
+  image: IFile;
   category: string;
   description: string;
   price: number;
@@ -29,11 +34,9 @@ const productSchema = new Schema<IProduct>({
   },
   description: {
     type: String,
-    required: false,
   },
   price: {
     type: Number,
-    required: false,
     default: null,
   },
 });

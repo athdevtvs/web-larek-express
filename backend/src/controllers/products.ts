@@ -7,7 +7,6 @@ import moveFile from '../utils/moveFile';
 import {
   BadRequestError,
   ConflictError,
-  ServerError,
   NotFoundError,
   ValidationError,
   DuplicateKeyError,
@@ -23,7 +22,7 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
         new BadRequestError(`Ошибка при получении продуктов: ${error.message}`)
       );
     }
-    return next(new ServerError('Произошла непредвиденная ошибка'));
+    return next(error);
   }
 };
 
@@ -31,10 +30,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
   const { title, image, category, description, price } = req.body;
 
   try {
-    const isExist = await Product.findOne({ title });
-    if (isExist) {
-      return next(new ConflictError(`Продукт с названием "${title}" уже существует`));
-    }
+    await Product.findOne({ title });
 
     await moveFile(image);
     const product = await Product.create({
@@ -68,7 +64,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
       return ValidationError(error, next);
     }
 
-    return next(new ServerError(`Произошла непредвиденная ошибка: ${error}`));
+    return next(error);
   }
 };
 
@@ -87,8 +83,8 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     }
 
     return res.send(product);
-  } catch (err) {
-    return next(new ServerError(`Произошла ошибка при удалении товара: ${err}`));
+  } catch (error) {
+    return next(error);
   }
 };
 
@@ -114,11 +110,11 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     }
 
     return res.send(updatedProduct);
-  } catch (err) {
-    if (err instanceof Error && err.message.includes('E11000')) {
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('E11000')) {
       return next(new ConflictError('Товар с таким заголовком уже существует'));
     }
 
-    return next(new ServerError('Произошла ошибка при обновлении товара'));
+    return next(error);
   }
 };

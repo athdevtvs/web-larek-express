@@ -1,6 +1,6 @@
 import { Schema, model, Model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { BadRequestError, NotFoundError } from '../errors';
+import { UnauthorizedError, NotFoundError } from '../errors';
 import ErrorMessage from '../constants/errorMessage';
 
 const SALT_ROUNDS = 10;
@@ -72,12 +72,12 @@ userSchema.statics.findUserByCredentials = async (email: string, password: strin
   // eslint-disable-next-line no-use-before-define
   const user = await userModel.findOne({ email }).select('+password');
   if (!user) {
-    throw new BadRequestError(ErrorMessage.INCORRECT_CREDENTIALS);
+    throw new UnauthorizedError(ErrorMessage.INCORRECT_CREDENTIALS);
   }
 
   const passwdMatch = await bcrypt.compare(password, user.password);
   if (!passwdMatch) {
-    throw new BadRequestError(ErrorMessage.INCORRECT_CREDENTIALS);
+    throw new UnauthorizedError(ErrorMessage.INCORRECT_CREDENTIALS);
   }
 
   return user;

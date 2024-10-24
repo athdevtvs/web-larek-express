@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { errors } from 'celebrate';
 import routes from './routes';
 import errorHandler from './middlewares/error-handler';
@@ -12,6 +13,7 @@ import './utils/cronJobs';
 
 const app = express();
 app.use(cookieParser());
+app.use(helmet());
 
 const corsOptions = {
   // Указывает источник, которому разрешен доступ к ресурсу
@@ -52,10 +54,10 @@ app.use(express.json()); // Для разбора JSON
 app.use(express.urlencoded({ extended: true })); // Для URL-кодированных запросов
 app.use(express.static(path.join(__dirname, 'public'))); // Обслуживаем статические файлы
 
-startServer();
-
 app.use(requestLogger); // Добавляем регистратор запросов
 app.use('/', routes); // Определяем маршруты
 app.use(errorLogger); // Добавляем регистратор ошибок (он должен находится перед errorHandler)
 app.use(errors()); // Обрабатываем ошибки проверки Celebrate
 app.use(errorHandler); // Подключакм пользовательский обработчик ошибок
+
+startServer();
