@@ -5,7 +5,6 @@ import { FileError } from '../errors';
 import { UPLOAD_TEMP_PATH } from '../config';
 
 const TEMP_DIR = path.join(__dirname, `../${UPLOAD_TEMP_PATH}`);
-console.log(TEMP_DIR);
 
 const deleteOldFiles = async () => {
   try {

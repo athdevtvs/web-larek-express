@@ -103,7 +103,7 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     });
 
     if (!updatedProduct) {
-      return next(new BadRequestError(`По заданному id ${productId} товар отсутствует`));
+      return next(new BadRequestError(`По заданному id товар отсутствует`));
     }
 
     return res.send(updatedProduct);
