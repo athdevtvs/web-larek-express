@@ -64,7 +64,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.status(HttpStatus.OK).send({
       id: orderId,
-      total,
+      total: actualTotal,
     });
   } catch (error) {
     return next(new ServerError(`Ошибка сервера: ${JSON.stringify(error)}`));
