@@ -50,7 +50,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     }
 
     return res.status(HttpStatus.CREATED).send({
-      _id: product._id,
+      id: product._id,
       title: product.title,
       image: product.image,
       category: product.category,
